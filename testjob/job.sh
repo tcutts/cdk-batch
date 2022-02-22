@@ -8,4 +8,5 @@ echo "jobQueue: $AWS_BATCH_JQ_NAME"
 echo "computeEnvironment: $AWS_BATCH_CE_NAME"
 echo "inputFile: $S3_INPUT_OBJECT"
 echo "inputBucket: $S3_INPUT_BUCKET"
+echo "outputBucket: $S3_OUTPUT_BUCKET"
 date

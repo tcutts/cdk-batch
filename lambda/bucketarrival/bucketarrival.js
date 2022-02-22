@@ -23,6 +23,10 @@ exports.handler = async function (event) {
           name: "S3_INPUT_BUCKET",
           value: srcBucket,
         },
+        {
+          name: "S3_OUTPUT_BUCKET",
+          value: process.env.S3_OUTPUT_BUCKET,
+        },
       ],
     },
   };
