@@ -15,7 +15,7 @@ export class CdkBatchStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // Source of job file
+    // Source of job files
     const bucket = s3.Bucket.fromBucketName(
       this,
       "ScriptBucket",
@@ -88,7 +88,6 @@ export class CdkBatchStack extends Stack {
     bucket.addEventNotification(
       s3.EventType.OBJECT_CREATED,
       new s3n.LambdaDestination(bucketArrival),
-      // 👇 only invoke lambda if object matches the filter
       { prefix: "input/", suffix: ".txt" }
     );
   }
