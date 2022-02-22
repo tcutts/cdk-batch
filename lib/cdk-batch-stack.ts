@@ -12,8 +12,8 @@ export class CdkBatchStack extends cdk.Stack {
   public inputBucket: s3.Bucket;
   public outputBucket: s3.Bucket;
   private ecsInstanceRole: iam.Role;
-  private jobDef: batch.JobDefinition;
-  private jobQueue: batch.JobQueue;
+  public jobDef: batch.JobDefinition;
+  public jobQueue: batch.JobQueue;
   private bucketArrival: lambda.Function;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
