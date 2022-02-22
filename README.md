@@ -1,15 +1,17 @@
-# Welcome to your CDK TypeScript project!
+# Canned batch cluster on Fargate
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`CdkBatchStack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+A common paradigm is to trigger batch jobs when files arrive in an S3 bucket.
+Genomics batch jobs can be quite long running, and arrive in large numbers,
+so the purpose here is to create an AWS Batch cluster, backed by Fargate,
+to which jobs are submitted every time a file arrives in an input S3 bucket
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+NB.  This is very much a proof-of-concept bit of code, and contains very little error checking of any kind.
 
-## Useful commands
+# How it works
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+The stack creates:
+* An S3 bucket
+* A Fargate Spot compute environment
+* An AWS Batch environment with a single job queue
+* A job definition which runs a container (defined in the testjob directory)
+* A lambda function triggered by files arriving in the S3 bucket, which submits jobs to the queue, setting an environment variable for the job to know which file to work on.
