@@ -1,4 +1,4 @@
-import { aws_s3, Duration, Stack, StackProps } from "aws-cdk-lib";
+import { Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as ecs from "aws-cdk-lib/aws-ecs";
@@ -7,7 +7,6 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3n from "aws-cdk-lib/aws-s3-notifications";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import { JobDefinition } from "@aws-cdk/aws-batch-alpha";
 
 const SCRIPT_BUCKET_NAME = "tc-batch-20220217";
 
@@ -83,7 +82,6 @@ export class CdkBatchStack extends Stack {
     );
 
     bucket.grantRead(bucketArrival, "input/*");
-    bucket.grantWrite(bucketArrival, "output/*");
 
     bucket.addEventNotification(
       s3.EventType.OBJECT_CREATED,
