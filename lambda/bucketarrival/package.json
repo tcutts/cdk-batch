@@ -1,0 +1,14 @@
+{
+  "name": "bucketarrival",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bucketarrival.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tim Cutts <tim@biomatics.co.uk>",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1078.0"
+  }
+}
