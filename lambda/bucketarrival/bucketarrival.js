@@ -13,6 +13,9 @@ exports.handler = async function (event) {
     jobDefinition: process.env.JOB_DEFINITION_NAME,
     jobQueue: process.env.JOB_QUEUE_NAME,
     jobName: srcKey.replace(/[^a-zA-Z0-9_-]/g, "_").substring(0, 127),
+    retryStrategy: {
+      attempts: 3,
+    },
     containerOverrides: {
       environment: [
         {

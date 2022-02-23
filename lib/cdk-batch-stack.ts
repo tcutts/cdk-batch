@@ -12,6 +12,7 @@ export class CdkBatchStack extends cdk.Stack {
   public inputBucket: s3.Bucket;
   public outputBucket: s3.Bucket;
   private ecsInstanceRole: iam.Role;
+  public jobRole: iam.Role;
   public jobDef: batch.JobDefinition;
   public jobQueue: batch.JobQueue;
   private bucketArrival: lambda.Function;
@@ -20,7 +21,6 @@ export class CdkBatchStack extends cdk.Stack {
     super(scope, id, props);
 
     this.createBuckets();
-    this.grantBucketAccessToFargate();
     this.createBatchEnvironment();
     this.createTriggerFunction();
 
@@ -84,6 +84,17 @@ export class CdkBatchStack extends cdk.Stack {
     });
   }
 
+  private createJobRole(): iam.Role {
+    const role = new iam.Role(this, "DefaultJobRole", {
+      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+    });
+
+    this.inputBucket.grantRead(role);
+    this.outputBucket.grantWrite(role);
+
+    return role;
+  }
+
   private createTaskExecutionRole(): iam.Role {
     const role = new iam.Role(this, "TaskExecutionRole", {
       assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
@@ -96,13 +107,6 @@ export class CdkBatchStack extends cdk.Stack {
     );
 
     return role;
-  }
-
-  private grantBucketAccessToFargate() {
-    // Give Fargate ECS instances permission to read and write from the buckets
-    this.ecsInstanceRole = this.createTaskExecutionRole();
-    this.inputBucket.grantRead(this.ecsInstanceRole);
-    this.outputBucket.grantWrite(this.ecsInstanceRole);
   }
 
   private createBatchEnvironment() {
@@ -134,15 +138,19 @@ export class CdkBatchStack extends cdk.Stack {
     // A default job to run
     this.jobDef = new batch.JobDefinition(this, "TestJob", {
       container: {
-        image: ecs.ContainerImage.fromAsset("testjob"),
-        executionRole: this.ecsInstanceRole,
+        image: ecs.ContainerImage.fromAsset("job_definitions/testjob"),
+        executionRole: this.createTaskExecutionRole(),
+        jobRole: this.createJobRole(),
       },
       platformCapabilities: [batch.PlatformCapabilities.FARGATE],
+      retryAttempts: 3,
+      timeout: cdk.Duration.days(1),
     });
   }
 
-  private createTriggerFunction() {
-    // lambda function to respond to events
+  // lambda function to respond to events
+  // for only bam files set filters to (say):  {suffix: ".bam"}
+  public createTriggerFunction(...filters: s3.NotificationKeyFilter[]) {
     this.bucketArrival = new lambda.Function(this, "BucketArrival", {
       runtime: lambda.Runtime.NODEJS_14_X,
       code: lambda.Code.fromAsset("lambda/bucketarrival"),
@@ -172,8 +180,8 @@ export class CdkBatchStack extends cdk.Stack {
     // Set up the notifications when objects arrive
     this.inputBucket.addEventNotification(
       s3.EventType.OBJECT_CREATED,
-      new s3n.LambdaDestination(this.bucketArrival)
-      // { prefix: "foo", suffix: ".txt" }
+      new s3n.LambdaDestination(this.bucketArrival),
+      ...filters
     );
   }
 }

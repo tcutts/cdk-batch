@@ -14,5 +14,5 @@ The stack creates:
 * An S3 bucket for output files
 * A Fargate Spot compute environment
 * An AWS Batch environment with a single job queue
-* A job definition which runs a container (defined in the testjob directory)
-* A lambda function triggered by files arriving in the S3 input bucket, which submits jobs to the queue, setting environment variables for the job to know which file to work on, and where the output bucket is.
+* A job definition which runs a container (defined in the [`job_definitions/testjob`](job_definitions/testjob) directory)
+* A lambda function, [`lambda/bucketarrival`](lambda/bucketarrival/bucketarrival.js) triggered by files arriving in the S3 input bucket, which submits jobs to the queue, setting environment variables for the job to know which file to work on, and where the output bucket is.
