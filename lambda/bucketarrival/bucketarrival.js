@@ -34,7 +34,7 @@ exports.handler = async function (event) {
     },
   };
 
-  console.log("Paraneters: " + JSON.stringify(params));
+  console.log("Parameters: " + JSON.stringify(params));
 
   try {
     const data = await batch.submitJob(params).promise();
