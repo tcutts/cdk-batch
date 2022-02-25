@@ -30,18 +30,27 @@ See the examples below for an example in this repository.
 You must also provide a list of filters to specify the files you want to trigger the batch job.   An empty list `[]` will cause a job to be launched for every
 object regardless of its name.
 
-Optionally, use the bucket props to override the defaults on the ways the buckets are created.
+Optionally, use the bucket props to override the defaults on the ways the buckets are created, and the computeResources to override some of the defaults in the Fargate compute resource.
 
 ```javascript
+// Subset of aws_batch_alpha.ComputeResources
+interface ComputeResourcesSubset {
+  maxvCpus?: number;
+  minvCpus?: number;
+  desiredvCpus?: number;
+  bidPercentage?: number;
+}
+
 interface FargateBatchWithS3Props {
   inputBucketProps?: s3.BucketProps;
   outputBucketProps?: s3.BucketProps;
+  computeResources?: ComputeResourceSubset;
   containerImage: ecs.ContainerImage;
   filters: s3.NotificationKeyFilter[];
 }
 ```
 # Examples
-## Example responding to only .txt files:
+## Example 1:  Simple case responding to .txt files:
 
 ```javascript
 const batchCluster = new FargateBatchWithS3Buckets(this, "Test", {
@@ -50,7 +59,12 @@ const batchCluster = new FargateBatchWithS3Buckets(this, "Test", {
 });
 ```
 
-## Example that doesn't destroy the output bucket when the stack is deleted.
+## Example 2:  More complex setup
+
+* Doesn't destroy the output bucket when the stack is deleted
+* Migrates completed data in output bucket to cheaper tier after 30 days
+* Expires data in the output bucket after a year
+* Increases the vCPU limit from the default (256) to 1000
     
 ```javascript
 const batchCluster = new FargateBatchWithS3Buckets(this, "Test", {
@@ -58,6 +72,19 @@ const batchCluster = new FargateBatchWithS3Buckets(this, "Test", {
     outputBucketProps: {
         autoDeleteObjects: false,
         removalPolicy: cdk.RemovalPolicy.RETAIN,
+        lifecycleRules: [{
+            abortIncompleteMultipartUploadAfter: cdk.Duration.days(90),
+            expiration: cdk.Duration.days(365),
+            transitions: [
+                {
+                  storageClass: s3.StorageClass.INFREQUENT_ACCESS,
+                  transitionAfter: cdk.Duration.days(30),
+                }, 
+            ],
+        }]
+    },
+    computeResources: {
+        maxvCpus: 1000,
     },
     filters: [],
 });

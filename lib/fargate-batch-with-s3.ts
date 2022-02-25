@@ -8,9 +8,17 @@ import * as s3n from "aws-cdk-lib/aws-s3-notifications";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 
+interface ComputeResourcesSubset {
+  maxvCpus?: number;
+  minvCpus?: number;
+  desiredvCpus?: number;
+  bidPercentage?: number;
+}
+
 export interface FargateBatchWithS3Props {
   inputBucketProps?: s3.BucketProps;
   outputBucketProps?: s3.BucketProps;
+  computeResources?: ComputeResourcesSubset;
   containerImage: ecs.ContainerImage;
   filters: s3.NotificationKeyFilter[];
 }
@@ -77,19 +85,6 @@ export class FargateBatchWithS3Buckets extends Construct {
       versioned: false,
       publicReadAccess: false,
       encryption: s3.BucketEncryption.S3_MANAGED,
-      lifecycleRules: [
-        {
-          abortIncompleteMultipartUploadAfter: cdk.Duration.days(90),
-          expiration: cdk.Duration.days(365),
-          // Uncomment the following to automatically migrate older output files to a cheaper storage tier
-          /*         transitions: [
-                {
-                  storageClass: s3.StorageClass.INFREQUENT_ACCESS,
-                  transitionAfter: cdk.Duration.days(30),
-                }, 
-              ], */
-        },
-      ],
     };
 
     Object.assign(outputBucketProps, props.outputBucketProps);
@@ -130,15 +125,21 @@ export class FargateBatchWithS3Buckets extends Construct {
     // VPC for the compute environment
     const vpc = new ec2.Vpc(this, "BatchVPC");
 
+    // Defaults for the compute_resources + user overrides
+    const compute_resources: batch.ComputeResources = Object.assign(
+      {
+        type: batch.ComputeResourceType.FARGATE_SPOT,
+        vpc,
+      },
+      props.computeResources
+    );
+
     // The fargate compute environment
     const fargateSpotEnvironment = new batch.ComputeEnvironment(
       this,
       "FargateEnvironment",
       {
-        computeResources: {
-          type: batch.ComputeResourceType.FARGATE_SPOT,
-          vpc,
-        },
+        computeResources: compute_resources,
       }
     );
 

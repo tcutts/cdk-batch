@@ -11,6 +11,9 @@ export class CdkBatchStack extends cdk.Stack {
 
     this.batchCluster = new bc.FargateBatchWithS3Buckets(this, "Test", {
       containerImage: ecs.ContainerImage.fromAsset("job_definitions/testjob"),
+      computeResources: {
+        maxvCpus: 1000,
+      },
       filters: [],
     });
   }
