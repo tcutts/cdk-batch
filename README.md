@@ -7,6 +7,11 @@ to which jobs are submitted every time a file arrives in an input S3 bucket
 
 NB.  This is very much a proof-of-concept bit of code, and contains very little error checking of any kind.
 
+# Guard rails
+For safety, there are a few guard rails in the construct:
+* a timeout on each job of one day
+* resource requirements default to just 0.25 vCPU and 512MB RAM.  To increase this you will need to replace the job definition with a new one, but keep its name as TestJob.
+
 # How it works
 
 The stack creates:
