@@ -27,6 +27,7 @@ export class FargateBatchWithS3Buckets extends Construct {
   public inputBucket: s3.Bucket;
   public outputBucket: s3.Bucket;
   public jobRole: iam.Role;
+  public executionRole: iam.Role;
   public jobDef: batch.JobDefinition;
   public jobQueue: batch.JobQueue;
   public bucketArrivalFunction: lambda.Function;
