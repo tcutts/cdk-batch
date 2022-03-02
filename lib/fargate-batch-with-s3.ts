@@ -55,6 +55,18 @@ export class FargateBatchWithS3Buckets extends Construct {
       exportName: "outputBucket",
     });
 
+    new cdk.CfnOutput(this, "jobQueueName", {
+      value: this.jobQueue.jobQueueName,
+      description: "The job queue to submit jobs to",
+      exportName: "jobQueuesName",
+    });
+
+    new cdk.CfnOutput(this, "jobDefinitionName", {
+      value: this.jobDef.jobDefinitionName,
+      description: "Test job definition",
+      exportName: "testJobDefinitionName",
+    });
+
     new cdk.CfnOutput(this, "submissionLogGroup", {
       value: this.bucketArrivalFunction.logGroup.logGroupArn,
       description:
