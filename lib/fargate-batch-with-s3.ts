@@ -16,6 +16,7 @@ interface ComputeResourcesSubset {
 }
 
 export interface FargateBatchWithS3Props {
+  vpc: ec2.Vpc;
   inputBucketProps?: s3.BucketProps;
   outputBucketProps?: s3.BucketProps;
   computeResources?: ComputeResourcesSubset;
@@ -135,14 +136,11 @@ export class FargateBatchWithS3Buckets extends Construct {
   }
 
   private createBatchEnvironment(props: FargateBatchWithS3Props) {
-    // VPC for the compute environment
-    const vpc = new ec2.Vpc(this, "BatchVPC");
-
     // Defaults for the compute_resources + user overrides
     const compute_resources: batch.ComputeResources = Object.assign(
       {
         type: batch.ComputeResourceType.FARGATE_SPOT,
-        vpc,
+        vpc: props.vpc,
       },
       props.computeResources
     );

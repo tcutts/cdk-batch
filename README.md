@@ -47,6 +47,7 @@ interface ComputeResourcesSubset {
 }
 
 interface FargateBatchWithS3Props {
+  vpc: ec2.Vpc;
   inputBucketProps?: s3.BucketProps;
   outputBucketProps?: s3.BucketProps;
   computeResources?: ComputeResourceSubset;
@@ -58,7 +59,10 @@ interface FargateBatchWithS3Props {
 ## Example 1:  Simple case responding to .txt files:
 
 ```javascript
+declare const vpc: ec2.Vpc;
+
 const batchCluster = new FargateBatchWithS3Buckets(this, "Test", {
+    vpc: vpc,
     containerImage: ecs.ContainerImage.fromAsset("job_definitions/testjob"),
     filters: [{ suffix: ".txt" }]
 });
@@ -72,7 +76,10 @@ const batchCluster = new FargateBatchWithS3Buckets(this, "Test", {
 * Increases the vCPU limit from the default (256) to 1000
     
 ```javascript
+declare const vpc: ec2.Vpc;
+
 const batchCluster = new FargateBatchWithS3Buckets(this, "Test", {
+    vpc: vpc,
     containerImage: ecs.ContainerImage.fromAsset("job_definitions/testjob"),
     outputBucketProps: {
         autoDeleteObjects: false,
