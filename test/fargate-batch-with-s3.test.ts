@@ -1,7 +1,7 @@
 import { App, Stack } from "aws-cdk-lib";
 import { ContainerImage } from "aws-cdk-lib/aws-ecs";
 import { Vpc } from "aws-cdk-lib/aws-ec2";
-import { Template, Match } from "aws-cdk-lib/assertions";
+import { Template } from "aws-cdk-lib/assertions";
 import { FargateBatchWithS3Buckets } from "../lib/fargate-batch-with-s3";
 
 test("Looks about right", () => {
