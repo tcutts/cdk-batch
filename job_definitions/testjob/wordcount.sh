@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2022 Tim Cutts <tim@thecutts.org>
+#
+# SPDX-License-Identifier: MIT
+
 set -e
 set -o pipefail
 

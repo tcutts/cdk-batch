@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Tim Cutts <tim@thecutts.org>
+//
+// SPDX-License-Identifier: MIT
+
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as ecs from "aws-cdk-lib/aws-ecs";

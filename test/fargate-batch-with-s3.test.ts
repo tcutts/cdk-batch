@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Tim Cutts <tim@thecutts.org>
+//
+// SPDX-License-Identifier: MIT
+
 import { App, Stack } from "aws-cdk-lib";
 import { ContainerImage } from "aws-cdk-lib/aws-ecs";
 import { Vpc } from "aws-cdk-lib/aws-ec2";

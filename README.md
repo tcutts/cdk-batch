@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2022 Tim Cutts <tim@thecutts.org>
+
+SPDX-License-Identifier: MIT
+-->
+
 # Canned batch cluster on Fargate
 
 A common paradigm is to trigger batch jobs when files arrive in an S3 bucket.

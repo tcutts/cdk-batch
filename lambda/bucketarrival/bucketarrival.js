@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Tim Cutts <tim@thecutts.org>
+//
+// SPDX-License-Identifier: MIT
+
 const AWS = require("aws-sdk");
 
 const batch = new AWS.Batch();
