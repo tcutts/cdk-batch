@@ -1,6 +1,11 @@
 {
   "name": "cdk-batch",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tcutts/cdk-batch.git"
+  },
+  "license" : "MIT",
   "bin": {
     "cdk-batch": "bin/cdk-batch.js"
   },
